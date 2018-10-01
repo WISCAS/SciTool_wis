@@ -18,6 +18,15 @@ headers = {
 url = 'https://search.crossref.org/'
 
 key = {'q':'mram'}
+def download_url(doi_org):
+    libgen_header = "http://libgen.io/scimag/ads.php?doi="
+    libgen_tailor = "&downloadname="
+    doi = re.findall(r'\Shttps://doi.org/([a-zA-Z0-9/\.\-?]+)', doi_org, re.S)
+    if doi!=None:
+        dl_url = libgen_header+doi[0]+libgen_tailor
+    else:
+        dl_url = ""
+    return dl_url
 
 def article_search(a, key_dict):
     r = requests.get(url=url, headers=headers, params=key_dict)
@@ -26,12 +35,17 @@ def article_search(a, key_dict):
 
     soup = BeautifulSoup(r.text, 'lxml')
     list=[]
-    for item in soup.find_all(name='td'):
-        a.web_append(str(item.find(class_='lead')))
+    table = soup.find(name='table')
+    for item in table.find_all(name='td'):
+        doi_url = str(item)
+        # print(doi_url)
+        # print(download_url(doi_url))
+        a.web_append('<a href="'+download_url(doi_url)+'">'+str(item.find(class_='lead'))+"</a>")
+        # a.web_append('<a href="http://www.baidu.com">' + str(item.find(class_='lead')) + '</a>')
         a.web_append(str(item.find(class_='extra')))
         a.web_append(str(item.find(class_='expand')))
-        a.web_append(str(item.find(name='a')))
-        a.web_append("")
+        a.web_append(doi_url)
+        a.web_append("\n\n\n")
 
     a.status_append("Search finished!")
 

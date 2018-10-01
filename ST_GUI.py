@@ -16,7 +16,7 @@ from PyQt5.QtCore import QUrl
 from doi_get import article_search
 
 class Ui_MainWindow(QWidget):
-    item_name = "SciTools V1.1"
+    item_name = "SciTools V1.2"
 
 
     html_url = """
@@ -94,7 +94,7 @@ class Ui_MainWindow(QWidget):
 
     def btn_webbrowser_Clicked(self):
         self.webView.setText("")
-        self.statusView.setText("Searching...")
+        self.statusView.append("Searching...")
         self.Key_Dict['q'] = self.titlebox.text()
         article_search(self, self.Key_Dict)
 

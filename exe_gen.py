@@ -10,5 +10,5 @@ from PyInstaller.__main__ import run
 
 import  os
 if __name__ == '__main__':
-    opts=['ST_GUI.py','-F','-w', '--icon=st.ico']
+    opts=['ST_GUI.py','-F','-w', '--icon=st.ico', '-paths D://Python_project/scientific_tools']
     run(opts)

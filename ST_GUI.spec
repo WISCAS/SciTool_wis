@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['ST_GUI.py'],
-             pathex=['D:\\Python_project\\scientific_tools'],
+             pathex=['aths D://Python_project/scientific_tools', 'D:\\Python_project\\scientific_tools'],
              binaries=[],
              datas=[],
              hiddenimports=[],

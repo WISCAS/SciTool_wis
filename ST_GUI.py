@@ -12,8 +12,8 @@ last edited: 10/1/2018
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QDesktopWidget, QLabel, QGridLayout, QTextBrowser,QLineEdit
 
 import webbrowser, sys
-from PyQt5.QtCore import QUrl
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QUrl, QSize
+from PyQt5.QtGui import QIcon, QPixmap, QImage
 from doi_get import article_search
 
 class Ui_MainWindow(QWidget):
@@ -59,14 +59,19 @@ class Ui_MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
-        self.Key_Dict = {'q':''}
+        self.Key_Dict = {'q':'','year':''}
 
     def initUI(self):
-        # self.tips_1 = QLabel("网站：<a href='http://code.py40.com'>http://code.py40.com</a>");
-        # self.tips_1.setOpenExternalLinks(True)
+        self.topic = QLabel()
+        pixmap = QPixmap('title.png').scaled(QSize(self.width()*4/5, self.height()*2/3))
+        self.topic.setScaledContents(True)
+        self.topic = QLabel(self)
+        self.topic.setPixmap(pixmap)
 
         self.titlebox = QLineEdit(self)
         self.title = QLabel("Title:")
+        self.yearbox = QLineEdit(self)
+        self.year = QLabel("Year:")
         self.webView = QTextBrowser()
         self.webView.setText("这是搜索结果显示框")
         self.webView.setOpenExternalLinks(True)
@@ -78,11 +83,14 @@ class Ui_MainWindow(QWidget):
 
         grid = QGridLayout()
         grid.setSpacing(10)
-        grid.addWidget(self.title, 2, 0, 1, 1)
-        grid.addWidget(self.titlebox, 2, 1, 1, 4)
-        grid.addWidget(self.btn_webbrowser, 3, 4, 2, 1)
-        grid.addWidget(self.statusView, 10, 0, 5, 5)
-        grid.addWidget(self.webView, 0, 5, 15, 10)
+        grid.addWidget(self.topic, 0, 0, 5, 10)
+        grid.addWidget(self.title, 6, 0, 1, 1)
+        grid.addWidget(self.titlebox, 6, 1, 1, 9)
+        grid.addWidget(self.year, 7, 0, 1, 1)
+        grid.addWidget(self.yearbox, 7, 1, 1, 5)
+        grid.addWidget(self.btn_webbrowser, 8, 8, 1, 2)
+        grid.addWidget(self.statusView, 10, 0, 5, 10)
+        grid.addWidget(self.webView, 0, 10, 15, 20)
 
 
         self.setLayout(grid)
@@ -92,13 +100,14 @@ class Ui_MainWindow(QWidget):
         self.setMaximumSize(1200,800);
         self.center()
         self.setWindowTitle(self.item_name)
-        self.setWindowIcon(QIcon("icon/scientificTool.png"))
+        self.setWindowIcon(QIcon("scientificTool.png"))
         self.show()
 
     def btn_webbrowser_Clicked(self):
         self.webView.setText("")
         self.statusView.append("Searching...")
         self.Key_Dict['q'] = self.titlebox.text()
+        self.Key_Dict['year'] = self.yearbox.text()
         article_search(self, self.Key_Dict)
 
     def center(self):

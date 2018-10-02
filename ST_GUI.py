@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QDesktopWidget, 
 
 import webbrowser, sys
 from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QIcon
 from doi_get import article_search
 
 class Ui_MainWindow(QWidget):
@@ -65,22 +66,23 @@ class Ui_MainWindow(QWidget):
         # self.tips_1.setOpenExternalLinks(True)
 
         self.titlebox = QLineEdit(self)
+        self.title = QLabel("Title:")
         self.webView = QTextBrowser()
         self.webView.setText("这是搜索结果显示框")
+        self.webView.setOpenExternalLinks(True)
         self.statusView = QTextBrowser()
         self.statusView.setText("这是状态显示框")
-        self.webView.setOpenExternalLinks(True)
         self.btn_webbrowser = QPushButton('search', self)
 
         self.btn_webbrowser.clicked.connect(self.btn_webbrowser_Clicked)
 
         grid = QGridLayout()
         grid.setSpacing(10)
-
-        grid.addWidget(self.titlebox, 0, 0, 1, 2)
-        grid.addWidget(self.btn_webbrowser, 2, 1, 1, 1)
-        grid.addWidget(self.statusView, 3, 0, 2, 2)
-        grid.addWidget(self.webView, 0, 2, 5, 2)
+        grid.addWidget(self.title, 2, 0, 1, 1)
+        grid.addWidget(self.titlebox, 2, 1, 1, 4)
+        grid.addWidget(self.btn_webbrowser, 3, 4, 2, 1)
+        grid.addWidget(self.statusView, 10, 0, 5, 5)
+        grid.addWidget(self.webView, 0, 5, 15, 10)
 
 
         self.setLayout(grid)
@@ -90,6 +92,7 @@ class Ui_MainWindow(QWidget):
         self.setMaximumSize(1200,800);
         self.center()
         self.setWindowTitle(self.item_name)
+        self.setWindowIcon(QIcon("icon/scientificTool.png"))
         self.show()
 
     def btn_webbrowser_Clicked(self):

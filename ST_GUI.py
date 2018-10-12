@@ -15,7 +15,7 @@ import webbrowser, sys
 from PyQt5.QtCore import QUrl, QSize
 from PyQt5.QtGui import QIcon, QPixmap, QImage
 from doi_get import article_search
-
+import os
 class Ui_MainWindow(QWidget):
     item_name = "SciTools V1.2"
 
@@ -77,9 +77,13 @@ class Ui_MainWindow(QWidget):
         self.webView.setOpenExternalLinks(True)
         self.statusView = QTextBrowser()
         self.statusView.setText("这是状态显示框")
-        self.btn_webbrowser = QPushButton('search', self)
 
+        self.btn_webbrowser = QPushButton('search', self)
         self.btn_webbrowser.clicked.connect(self.btn_webbrowser_Clicked)
+
+        self.btn_check = QPushButton('check', self)
+
+        self.btn_check.clicked.connect(self.btn_check_Clicked)
 
         grid = QGridLayout()
         grid.setSpacing(10)
@@ -89,6 +93,7 @@ class Ui_MainWindow(QWidget):
         grid.addWidget(self.year, 7, 0, 1, 1)
         grid.addWidget(self.yearbox, 7, 1, 1, 5)
         grid.addWidget(self.btn_webbrowser, 8, 8, 1, 2)
+        grid.addWidget(self.btn_check, 8, 6, 1, 2)
         grid.addWidget(self.statusView, 10, 0, 5, 10)
         grid.addWidget(self.webView, 0, 10, 15, 20)
 
@@ -103,12 +108,21 @@ class Ui_MainWindow(QWidget):
         self.setWindowIcon(QIcon("scientificTool.png"))
         self.show()
 
+
     def btn_webbrowser_Clicked(self):
         self.webView.setText("")
-        self.statusView.append("Searching...")
+        self.statusView.append("正在搜索...")
         self.Key_Dict['q'] = self.titlebox.text()
         self.Key_Dict['year'] = self.yearbox.text()
         article_search(self, self.Key_Dict)
+
+    def btn_check_Clicked(self):
+        # 检查网络状态
+        result = os.system("ping -n 1 www.baidu.com")
+        if result == 0:
+            self.status_append('网络连接正常')
+        else:
+            self.status_append('网络异常，请检查网络')
 
     def center(self):
         qr = self.frameGeometry()

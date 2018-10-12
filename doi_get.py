@@ -2,6 +2,7 @@ import requests
 import re
 import lxml
 from bs4 import BeautifulSoup
+import os
 
 headers = {
     'accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -28,26 +29,36 @@ def download_url(doi_org):
         dl_url = ""
     return dl_url
 
+def doi_url(doi_org):
+
+    doi = re.findall(r'\S(https://doi.org/[a-zA-Z0-9/\.\-?]+)', doi_org, re.S)
+
+    return doi[0]
+
 def article_search(a, key_dict):
-    r = requests.get(url=url, headers=headers, params=key_dict)
-    #print(r.text)
-    #print(type(r.text))
+    try:
+        r = requests.get(url=url, headers=headers, params=key_dict)
+    except:
+        a.status_append("搜索超时！")
 
-    soup = BeautifulSoup(r.text, 'lxml')
-    list=[]
-    table = soup.find(name='table')
-    for item in table.find_all(name='td'):
-        doi_url = str(item)
-        # print(doi_url)
-        # print(download_url(doi_url))
-        a.web_append('<a href="'+download_url(doi_url)+'">'+str(item.find(class_='lead'))+"</a>")
-        # a.web_append('<a href="http://www.baidu.com">' + str(item.find(class_='lead')) + '</a>')
-        a.web_append(str(item.find(class_='extra')))
-        a.web_append(str(item.find(class_='expand')))
-        a.web_append(doi_url)
-        a.web_append("\n\n\n")
+    else:
+        soup = BeautifulSoup(r.text, 'lxml')
+        list=[]
+        table = soup.find(name='table')
+        for item in table.find_all(name='td'):
+            doi = doi_url(str(item))
+            down_url = download_url(str(item))
 
-    a.status_append("Search finished!")
+            # print(doi_url)
+            # print(download_url(doi_url))
+            a.web_append('<a href="'+down_url+'">'+str(item.find(class_='lead'))+"</a>")
+            # a.web_append('<a href="http://www.baidu.com">' + str(item.find(class_='lead')) + '</a>')
+            a.web_append(str(item.find(class_='extra')))
+            a.web_append(str(item.find(class_='expand')))
+            a.web_append('<a href="'+doi+'">'+doi+"</a>")
+            a.web_append("\n")
+
+        a.status_append("搜索完成！请点击标题链接进入下载")
 
 
 
